@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uriel García Adalid — UX, Gamification & ROI</title>
+<meta name="description" content="UX designer specialized in gamification, engagement and turning design into measurable ROI.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Sora:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0D0F1C; --panel:#151A2C; --panel-2:#1B2138; --line:#262E4A;
+  --gold:#F5C542; --violet:#7C6CF0; --pink:#F06CB0; --blue:#5B9CF6;
+  --text:#E8EAF2; --muted:#8A91A8; --red:#F0645C; --radius:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--text);font-family:'Sora',sans-serif;line-height:1.6;font-size:16px}
+::selection{background:var(--gold);color:var(--ink)}
+a{color:inherit}
+a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+.eyebrow{font-family:'Space Mono',monospace;font-size:.78rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:18px}
+
+nav{position:sticky;top:0;z-index:50;background:rgba(13,15,28,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+.logo{font-family:'Space Mono',monospace;font-weight:700;font-size:.95rem;text-decoration:none;letter-spacing:.04em}
+.logo span{color:var(--gold)}
+.nav-links{display:flex;gap:22px;list-style:none}
+.nav-links a{text-decoration:none;color:var(--muted);font-size:.85rem;transition:color .2s;padding:6px 2px;border-bottom:2px solid transparent}
+.nav-links a:hover{color:var(--text)}
+.nav-links a.active{color:var(--gold);border-bottom-color:var(--gold)}
+.lang{display:flex;gap:6px}
+.lang button{background:none;border:1px solid var(--line);color:var(--muted);font-family:'Space Mono',monospace;font-size:.7rem;padding:5px 9px;border-radius:7px;cursor:pointer;transition:all .2s}
+.lang button:hover{border-color:var(--violet);color:var(--text)}
+.lang button.on{background:var(--gold);border-color:var(--gold);color:var(--ink);font-weight:700}
+
+.hero{padding:80px 0 90px;display:grid;grid-template-columns:1.1fr .9fr;gap:52px;align-items:center}
+h1{font-family:'Unbounded',sans-serif;font-weight:700;font-size:clamp(1.9rem,4.4vw,2.9rem);line-height:1.15;margin-bottom:20px}
+h1 em{font-style:normal;color:var(--violet)}
+.hero>div>p{color:var(--muted);max-width:46ch;margin-bottom:32px}
+.cta-row{display:flex;gap:14px;flex-wrap:wrap}
+.btn{display:inline-block;padding:13px 26px;border-radius:10px;text-decoration:none;font-weight:600;font-size:.92rem;border:none;cursor:pointer;font-family:'Sora',sans-serif;transition:transform .15s,box-shadow .15s}
+.btn-primary{background:var(--gold);color:var(--ink)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(245,197,66,.25)}
+.btn-ghost{border:1px solid var(--line);color:var(--text);background:none}
+.btn-ghost:hover{border-color:var(--violet)}
+
+.player-card{background:linear-gradient(160deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:20px;padding:26px;position:relative;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.45)}
+.player-card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 85% -10%,rgba(124,108,240,.25),transparent 55%);pointer-events:none}
+.pc-top{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.avatar{width:60px;height:60px;border-radius:50%;background:conic-gradient(var(--gold),var(--violet),var(--gold));display:grid;place-items:center;flex-shrink:0}
+.avatar-inner{width:52px;height:52px;border-radius:50%;background:var(--panel);display:grid;place-items:center;color:var(--text);font-family:'Unbounded',sans-serif;font-weight:700;font-size:1rem}
+.pc-name{font-family:'Unbounded',sans-serif;font-size:1rem;font-weight:500}
+.pc-class{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--muted);letter-spacing:.05em}
+.now{display:flex;align-items:center;gap:8px;background:rgba(245,197,66,.08);border:1px solid rgba(245,197,66,.35);border-radius:10px;padding:9px 13px;margin-bottom:18px;position:relative}
+.now .dot{width:8px;height:8px;border-radius:50%;background:#4ADE80;box-shadow:0 0 8px #4ADE80;flex-shrink:0}
+.now{overflow:hidden}.now span{font-family:'Space Mono',monospace;font-size:.66rem;letter-spacing:.03em;color:var(--gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.xp-label{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:.72rem;color:var(--muted);margin-bottom:6px}
+.xp-bar{height:8px;border-radius:99px;background:var(--ink);overflow:hidden;margin-bottom:18px}
+.xp-fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--violet),var(--gold));transition:width .8s ease}
+.pc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.stat{background:rgba(13,15,28,.55);border:1px solid var(--line);border-radius:10px;padding:11px 8px;text-align:center}
+.stat b{display:block;font-family:'Space Mono',monospace;font-size:1.1rem;color:var(--text)}
+.stat span{font-size:.6rem;color:var(--muted);letter-spacing:0;line-height:1.35;text-transform:uppercase;display:block}
+.legend{display:flex;gap:8px;margin-bottom:12px;position:relative;flex-wrap:wrap}
+.legend button{background:none;border:1px solid var(--line);border-radius:99px;padding:4px 11px;font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.04em;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s}
+.legend button::before{content:"";width:8px;height:8px;border-radius:50%}
+.legend button[data-f="mastered"]::before{background:var(--gold)}
+.legend button[data-f="enhancing"]::before{background:var(--pink)}
+.legend button[data-f="progress"]::before{background:var(--blue)}
+.legend button.on{color:var(--text);border-color:var(--muted)}
+.pc-badges{display:flex;gap:8px;flex-wrap:wrap;position:relative}
+.badge{font-family:'Space Mono',monospace;font-size:.64rem;letter-spacing:.03em;border-radius:99px;padding:5px 11px;transition:all .25s;border:1px solid var(--line);color:var(--muted);cursor:pointer;user-select:none}
+.badge i{font-style:normal;opacity:.65;font-size:.56rem;margin-left:3px}
+.badge[data-s="mastered"].lit{border-color:var(--gold);color:var(--gold);background:rgba(245,197,66,.08)}
+.badge[data-s="enhancing"].lit{border-color:var(--pink);color:var(--pink);background:rgba(240,108,176,.08)}
+.badge[data-s="progress"].lit{border-color:var(--blue);color:var(--blue);background:rgba(91,156,246,.08)}
+.badge.dim{opacity:.28}
+
+section{padding:72px 0;border-top:1px solid var(--line)}
+.sec-head{margin-bottom:44px}
+.sec-head h2{font-family:'Unbounded',sans-serif;font-weight:500;font-size:1.5rem;margin-top:8px}
+.sec-head p{color:var(--muted);max-width:56ch;margin-top:10px}
+.hint-sub{font-family:'Space Mono',monospace;font-size:.66rem;color:var(--muted);opacity:.55;margin-top:8px}
+
+.projects{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.project{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:26px;text-decoration:none;display:flex;flex-direction:column;gap:14px;transition:transform .18s,border-color .18s}
+.project:hover{transform:translateY(-4px)}
+.project.p-arcade:hover{border-color:var(--violet)}
+.project.p-cine:hover{border-color:var(--blue)}
+.project.p-alerta:hover{border-color:var(--red)}
+.plogo{width:52px;height:52px;border-radius:13px;display:grid;place-items:center;border:1px solid var(--line);overflow:hidden;font-size:1.5rem}
+.plogo img{width:100%;height:100%;object-fit:contain;padding:6px}
+.p-arcade .plogo{background:rgba(124,108,240,.12)}
+.p-cine .plogo{background:rgba(91,156,246,.12)}
+.p-alerta .plogo{background:rgba(240,100,92,.12)}
+.plogo svg{width:32px;height:32px}
+.proj-tag{font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase}
+.p-arcade .proj-tag{color:var(--violet)} .p-cine .proj-tag{color:var(--blue)} .p-alerta .proj-tag{color:var(--red)}
+.project h3{font-family:'Unbounded',sans-serif;font-weight:500;font-size:1.05rem}
+.project p{color:var(--muted);font-size:.9rem;flex:1}
+.proj-meta{font-family:'Space Mono',monospace;font-size:.72rem;color:var(--muted)}
+.proj-cta{font-size:.85rem;font-weight:600;color:var(--gold)}
+
+.tree{position:relative;padding-left:26px}
+.tree::before{content:"";position:absolute;left:8px;top:10px;bottom:10px;width:2px;background:linear-gradient(180deg,var(--violet),var(--gold))}
+.tier{position:relative;margin-bottom:36px}
+.tier:last-child{margin-bottom:0}
+.tier::before{content:"";position:absolute;left:-24px;top:6px;width:14px;height:14px;border-radius:50%;background:var(--ink);border:3px solid var(--violet)}
+.tier:nth-child(2)::before{border-color:#9A7DE8}
+.tier:nth-child(3)::before{border-color:#C973C8}
+.tier:nth-child(4)::before{border-color:var(--gold)}
+.tier-label{font-family:'Space Mono',monospace;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;cursor:pointer;user-select:none}
+.tier-label::after{content:" ▸";color:var(--muted)}
+.tier.open .tier-label::after{content:" ▾";color:var(--gold)}
+.tier .nodes{display:none}
+.tier.open .nodes{display:flex}
+.nodes{display:flex;gap:14px;flex-wrap:wrap}
+.node{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;min-width:220px;flex:1;max-width:340px;cursor:pointer;transition:border-color .2s}
+.node:hover,.node:focus-within,.node.open{border-color:var(--gold)}
+.n-name{font-weight:600;font-size:.95rem;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.n-name::after{content:"+";font-family:'Space Mono',monospace;color:var(--muted);transition:transform .2s}
+.node:hover .n-name::after,.node.open .n-name::after{transform:rotate(45deg);color:var(--gold)}
+.n-tag{font-size:.78rem;color:var(--muted);margin-top:2px}
+.n-pop{max-height:0;overflow:hidden;transition:max-height .3s ease,margin .3s ease}
+.node:hover .n-pop,.node.open .n-pop,.node:focus-within .n-pop{max-height:240px;margin-top:12px}
+.n-pop p{font-size:.8rem;color:var(--muted);margin-bottom:10px}
+.n-viz{display:flex;align-items:flex-end;gap:4px;height:34px}
+.n-viz .vb{width:12px;border-radius:3px 3px 0 0;background:linear-gradient(180deg,var(--violet),var(--gold))}
+.n-viz.roi{align-items:center}
+.n-viz svg{height:32px;width:auto}
+
+.tools-h{font-family:'Space Mono',monospace;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:48px 0 14px}
+.tb-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.tb-tabs button{background:none;border:1px solid var(--line);border-radius:10px;padding:9px 18px;color:var(--muted);font-family:'Sora',sans-serif;font-size:.85rem;cursor:pointer;transition:all .2s}
+.tb-tabs button:hover{color:var(--text)}
+.tb-tabs button.on{background:rgba(245,197,66,.1);border-color:var(--gold);color:var(--gold);font-weight:600}
+.tb-panel{display:none;gap:10px;flex-wrap:wrap;animation:reveal .3s ease}
+.tb-panel.on{display:flex}
+.tb-chip{background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:8px 16px;font-size:.85rem;color:var(--text)}
+
+.cv-progress{font-family:'Space Mono',monospace;font-size:.8rem;color:var(--gold);margin-bottom:24px}
+.cv-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:36px}
+.flip{perspective:900px;cursor:pointer;height:205px;background:none;border:none;text-align:inherit;color:inherit;font:inherit}
+.flip-inner{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip.flipped .flip-inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--radius);border:1px solid var(--line);padding:22px;display:flex;flex-direction:column;justify-content:center;gap:10px}
+.face-front{background:linear-gradient(160deg,var(--panel-2),var(--panel));align-items:center;text-align:center}
+.face-front .q{font-family:'Unbounded',sans-serif;font-size:2rem;color:var(--violet)}
+.face-front .hint{font-family:'Space Mono',monospace;font-size:.72rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.face-back{background:var(--panel);transform:rotateY(180deg)}
+.face-back h4{font-family:'Space Mono',monospace;font-size:.72rem;color:var(--gold);letter-spacing:.08em;text-transform:uppercase}
+.face-back p{font-size:.8rem;color:var(--muted)}
+.cv-locked{border:1px dashed var(--line);border-radius:var(--radius);padding:36px;text-align:center;color:var(--muted);font-family:'Space Mono',monospace;font-size:.85rem}
+.cv-full{display:none;background:var(--panel);border:1px solid rgba(245,197,66,.4);border-radius:var(--radius);padding:34px;animation:reveal .5s ease}
+.cv-full.open{display:block}
+@keyframes reveal{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.cv-full h3{font-family:'Unbounded',sans-serif;font-weight:500;font-size:1.1rem;color:var(--gold);margin-bottom:18px}
+.cv-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.cv-block h5{font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--violet);margin-bottom:10px}
+.cv-block ul{list-style:none}
+.cv-block li{padding:7px 0;border-bottom:1px solid var(--line);font-size:.87rem;color:var(--muted)}
+.cv-block li b{color:var(--text);font-weight:600}
+.cv-block li:last-child{border:none}
+
+.game-wrap{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:28px;max-width:640px;margin:0 auto}
+.game-hud{display:flex;justify-content:space-between;align-items:center;font-family:'Space Mono',monospace;font-size:.75rem;color:var(--muted);margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.game-hud .items span{margin-right:8px;opacity:.25;transition:opacity .3s;font-size:1rem}
+.game-hud .items span.got{opacity:1}
+#board{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;margin-bottom:16px;user-select:none}
+.cell{aspect-ratio:1;background:var(--ink);border-radius:6px;display:grid;place-items:center;font-size:1.05rem;border:1px solid transparent}
+.cell.wall{background:var(--panel-2);border-color:var(--line)}
+.cell.goal{background:rgba(245,197,66,.12);border-color:rgba(245,197,66,.4)}
+.cell.player{background:rgba(124,108,240,.2);border-color:var(--violet);font-family:'Unbounded',sans-serif;font-size:.62rem;color:var(--text)}
+.cell.rival{background:rgba(240,100,92,.15);border-color:var(--red)}
+.pad{display:grid;grid-template-columns:repeat(3,52px);gap:6px;justify-content:center}
+.pad button{background:var(--panel-2);border:1px solid var(--line);border-radius:9px;color:var(--text);font-size:1.05rem;padding:11px 0;cursor:pointer;transition:all .15s}
+.pad button:hover{border-color:var(--gold)}
+.pad .blank{visibility:hidden}
+.game-msg{text-align:center;font-family:'Space Mono',monospace;font-size:.8rem;color:var(--muted);margin-top:14px;min-height:1.4em}
+.game-msg.win{color:var(--gold);font-weight:700}
+.game-msg.lose{color:var(--red);font-weight:700}
+.board-wrap{position:relative}
+.game-over{display:none;position:absolute;inset:0;background:rgba(13,15,28,.85);backdrop-filter:blur(2px);border-radius:8px;place-items:center;text-align:center;padding:20px;font-family:'Space Mono',monospace;font-weight:700;font-size:.9rem;z-index:2}
+.game-over.show{display:grid}
+.game-over.win{color:var(--gold)}
+.game-over.lose{color:var(--red)}
+
+.about-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:48px;align-items:start}
+.about-grid p{color:var(--muted);margin-bottom:16px}
+.about-grid strong{color:var(--text)}
+.side-note{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+.side-note h4{font-family:'Space Mono',monospace;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.side-note ul{list-style:none}
+.side-note li{padding:8px 0;border-bottom:1px solid var(--line);font-size:.88rem;color:var(--muted)}
+.side-note li:last-child{border-bottom:none}
+.contact{text-align:center;padding:96px 0}
+.contact h2{font-family:'Unbounded',sans-serif;font-weight:500;font-size:1.7rem;margin-bottom:14px}
+.contact p{color:var(--muted);margin-bottom:32px}
+footer{border-top:1px solid var(--line);padding:28px 0;text-align:center;color:var(--muted);font-size:.8rem;font-family:'Space Mono',monospace}
+
+@media (max-width:860px){
+  .hero{grid-template-columns:1fr;padding:52px 0 60px}
+  .projects,.cv-cards{grid-template-columns:1fr}
+  .about-grid,.cv-grid{grid-template-columns:1fr}
+  .nav-links{display:none}
+  .flip{height:185px}
+  .node{max-width:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important;scroll-behavior:auto}
+  .flip-inner{transition:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-inner">
+    <a class="logo" href="#top">uriel<span>.ux</span></a>
+    <ul class="nav-links">
+      <li><a href="#proyectos" data-i18n="nav_projects">Projects</a></li>
+      <li><a href="#skills" data-i18n="nav_skills">Skills</a></li>
+      <li><a href="#cv">CV</a></li>
+      <li><a href="#juego" data-i18n="nav_game">Play</a></li>
+      <li><a href="#sobre-mi" data-i18n="nav_about">About</a></li>
+      <li><a href="#contacto" data-i18n="nav_contact">Contact</a></li>
+    </ul>
+    <div class="lang" role="group" aria-label="Language">
+      <button class="on" data-lang="en">EN</button>
+      <button data-lang="es">ES</button>
+      <button data-lang="pt">PT</button>
+    </div>
+  </div>
+</nav>
+
+<header class="hero wrap" id="top">
+  <div>
+    <p class="eyebrow">UX Design × Gamification × ROI</p>
+    <h1 data-i18n-html="hero_h1">I design experiences people <em>want</em> to come back to.</h1>
+    <p data-i18n="hero_p">Why do some products feel impossible to put down? Answering that question became my career. I engineer engagement — loops, rewards, motivation — and turn it into experiences people love and ROI you can measure.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#proyectos" data-i18n="hero_cta1">View projects</a>
+      <a class="btn btn-ghost" href="#contacto" data-i18n="hero_cta2">Get in touch</a>
+    </div>
+  </div>
+  <aside class="player-card" aria-label="Player profile">
+    <div class="pc-top">
+      <div class="avatar"><div class="avatar-inner">UG</div></div>
+      <div>
+        <div class="pc-name">Uriel García Adalid</div>
+        <div class="pc-class">UX DESIGNER · ROI-DRIVEN</div>
+      </div>
+    </div>
+    <div class="now"><div class="dot"></div><span data-i18n="pc_now">CURRENT: GAMIFICATION LEAD · CENTRICAL</span></div>
+    <div class="xp-label"><span data-i18n="pc_xp">XP — Skill mastery</span><span id="xpPct">0%</span></div>
+    <div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div>
+    <div class="pc-stats">
+      <div class="stat"><b>3</b><span data-i18n="pc_s1">Yrs UX certified</span></div>
+      <div class="stat"><b>2</b><span data-i18n="pc_s2">Google certs</span></div>
+      <div class="stat"><b>+6</b><span data-i18n="pc_s3">Yrs remote work</span></div>
+    </div>
+    <div class="legend" role="group" aria-label="Skill status filter">
+      <button data-f="mastered" class="on"><span data-i18n="lg_m">Mastered</span></button>
+      <button data-f="enhancing" class="on"><span data-i18n="lg_p">Enhancing</span></button>
+      <button data-f="progress" class="on"><span data-i18n="lg_x">In progress</span></button>
+    </div>
+    <div class="pc-badges" id="badges">
+      <span class="badge lit" data-s="mastered" data-pct="100">Google UX Design<i>100</i></span>
+      <span class="badge lit" data-s="mastered" data-pct="100">Google Data Analytics<i>100</i></span>
+      <span class="badge lit" data-s="mastered" data-pct="93">ROI Strategy<i>93</i></span>
+      <span class="badge lit" data-s="mastered" data-pct="92">AI & automation<i>92</i></span>
+      <span class="badge lit" data-s="mastered" data-pct="90">Adobe XD<i>90</i></span>
+      <span class="badge lit" data-s="enhancing" data-pct="86">Centrical<i>86</i></span>
+      <span class="badge lit" data-s="enhancing" data-pct="83">Figma (modern)<i>83</i></span>
+      <span class="badge lit" data-s="progress" data-pct="75">Design Systems<i>75</i></span>
+      <span class="badge lit" data-s="progress" data-pct="72">Português<i>72</i></span>
+    </div>
+  </aside>
+</header>
+
+<section id="proyectos">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow" data-i18n="proj_eyebrow">Completed quests</p>
+      <h2 data-i18n="proj_h2">Projects</h2>
+      <p data-i18n="proj_p">End-to-end case studies: research, wireframes, prototypes, usability studies and iteration. Click any card to open the full case study.</p>
+    </div>
+    <div class="projects">
+      <a class="project p-arcade" href="assets/cases/arcade-case.pdf" target="_blank" rel="noopener">
+        <div class="plogo" aria-hidden="true" style="font-size:1.8rem"><img src="assets/arcade-logo.png" alt="" onerror="this.remove();this.parentNode.textContent='🦄'"></div>
+        <span class="proj-tag">Mobile App · Gamification</span>
+        <h3>Arcade App</h3>
+        <p data-i18n="proj1_p">A mobile app to get arcade memberships, tickets and prizes with zero lines and zero bureaucracy. Two rounds of usability testing.</p>
+        <span class="proj-meta">Figma · 2× usability testing · EN/ES</span>
+        <span class="proj-cta" data-i18n="proj_cta">Open case study (PDF) →</span>
+      </a>
+      <a class="project p-cine" href="assets/cases/cinext-case.pdf" target="_blank" rel="noopener">
+        <div class="plogo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#5B9CF6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 10l1.5 10h9L18 10"/>
+            <path d="M6 10h12M9.5 10v10M14.5 10v10"/>
+            <circle cx="8.5" cy="7.5" r="1.8"/><circle cx="12" cy="6" r="2"/><circle cx="15.5" cy="7.5" r="1.8"/>
+          </svg>
+        </div>
+        <span class="proj-tag">Responsive Web</span>
+        <h3>Cinext</h3>
+        <p data-i18n="proj2_p">A responsive cinema site to book seats and food online with an immersive experience, from desktop to mobile.</p>
+        <span class="proj-meta">Adobe XD · Accessibility 16.8:1</span>
+        <span class="proj-cta" data-i18n="proj_cta">Open case study (PDF) →</span>
+      </a>
+      <a class="project p-alerta" href="assets/cases/estoyok-case.pdf" target="_blank" rel="noopener">
+        <div class="plogo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#F0645C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 4a6 6 0 0 1 6 6v3.5l1.5 2.5H4.5L6 13.5V10a6 6 0 0 1 6-6z"/>
+            <path d="M10 19a2 2 0 0 0 4 0"/>
+            <path d="M12 2v1M4 6l1 .8M20 6l-1 .8"/>
+          </svg>
+        </div>
+        <span class="proj-tag">Social Good · Mobile</span>
+        <h3>EstoyOk!</h3>
+        <p data-i18n="proj3_p">A safety alert app that notifies your trusted circle in seconds — gestures, live streaming and offline functions.</p>
+        <span class="proj-meta">Figma · Competitive audit</span>
+        <span class="proj-cta" data-i18n="proj_cta">Open case study (PDF) →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow" data-i18n="skills_eyebrow">Skill tree</p>
+      <h2>Skills</h2>
+      <p data-i18n="skills_p">From foundations to frontier.</p>
+      <p class="hint-sub" data-i18n="skills_hint">hover / tap each node for details</p>
+    </div>
+    <div class="tree">
+      <div class="tier">
+        <div class="tier-label" data-i18n="t1">LVL 1 · Foundations</div>
+        <div class="nodes">
+          <div class="node" tabindex="0">
+            <div class="n-name">UX Research</div>
+            <div class="n-tag" data-i18n="n1t">Understanding users before designing</div>
+            <div class="n-pop"><p data-i18n="n1p">Interviews, moderated & unmoderated usability studies, and synthesis into actionable insights.</p>
+              <div class="n-viz"><svg viewBox="0 0 60 32" fill="none" stroke="#8A91A8" stroke-width="1.4"><rect x="2" y="4" width="24" height="14" rx="4"/><path d="M8 18l-2 5 6-5" fill="#8A91A8"/><rect x="34" y="10" width="24" height="14" rx="4" stroke="#F5C542"/><path d="M52 24l2 5-6-5" fill="none" stroke="#F5C542"/></svg></div>
+            </div>
+          </div>
+          <div class="node" tabindex="0">
+            <div class="n-name">Wireframing</div>
+            <div class="n-tag" data-i18n="n2t">Structuring ideas at low cost</div>
+            <div class="n-pop"><p data-i18n="n2p">Paper → digital schematics to explore layouts and flows fast, before investing in visuals.</p>
+              <div class="n-viz"><svg viewBox="0 0 60 32" fill="none" stroke="#8A91A8" stroke-width="1.4"><rect x="2" y="2" width="26" height="28" rx="3"/><line x1="6" y1="8" x2="24" y2="8"/><rect x="6" y="12" width="8" height="8"/><line x1="17" y1="14" x2="24" y2="14"/><line x1="17" y1="18" x2="24" y2="18"/><rect x="34" y="2" width="26" height="28" rx="3" stroke="#F5C542"/><line x1="38" y1="8" x2="56" y2="8" stroke="#F5C542"/><rect x="38" y="12" width="18" height="10" stroke="#F5C542"/></svg></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tier">
+        <div class="tier-label" data-i18n="t2">LVL 2 · Build</div>
+        <div class="nodes">
+          <div class="node" tabindex="0">
+            <div class="n-name" data-i18n="n3">Prototyping</div>
+            <div class="n-tag" data-i18n="n3t">Making ideas testable</div>
+            <div class="n-pop"><p data-i18n="n3p">Lo-Fi to Hi-Fi in Adobe XD & Figma — interactive flows ready for usability testing.</p>
+              <div class="n-viz"><svg viewBox="0 0 60 32" fill="none" stroke="#8A91A8" stroke-width="1.4"><rect x="2" y="6" width="16" height="22" rx="3"/><rect x="42" y="6" width="16" height="22" rx="3" stroke="#F5C542"/><path d="M22 17h14m0 0l-4-4m4 4l-4 4" stroke="#7C6CF0"/></svg></div>
+            </div>
+          </div>
+          <div class="node" tabindex="0">
+            <div class="n-name" data-i18n="n4">Accessibility</div>
+            <div class="n-tag" data-i18n="n4t">Design that works for everyone</div>
+            <div class="n-pop"><p data-i18n="n4p">WCAG guidelines, contrast ratios and screen-reader friendly navigation flows.</p>
+              <div class="n-viz"><svg viewBox="0 0 60 32"><circle cx="16" cy="16" r="12" fill="#E8EAF2"/><path d="M16 4a12 12 0 0 1 0 24z" fill="#0D0F1C" stroke="#8A91A8"/><text x="36" y="21" fill="#F5C542" font-size="11" font-family="monospace">AA+</text></svg></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tier">
+        <div class="tier-label" data-i18n="t3">LVL 3 · Amplify</div>
+        <div class="nodes">
+          <div class="node" tabindex="0">
+            <div class="n-name" data-i18n="n5">Data Analysis</div>
+            <div class="n-tag" data-i18n="n5t">Decisions backed by evidence</div>
+            <div class="n-pop"><p data-i18n="n5p">Dashboards, KPIs and analysis methodologies — Pareto, trends, cohorts — to measure what actually matters.</p>
+              <div class="n-viz"><div class="vb" style="height:35%"></div><div class="vb" style="height:60%"></div><div class="vb" style="height:45%"></div><div class="vb" style="height:85%"></div><div class="vb" style="height:100%"></div></div>
+            </div>
+          </div>
+          <div class="node" tabindex="0">
+            <div class="n-name" data-i18n="n6">Gamification & ROI</div>
+            <div class="n-tag" data-i18n="n6t">Engagement that pays off</div>
+            <div class="n-pop"><p data-i18n="n6p">Missions, rewards and progression — I have run gamified campaigns delivering savings, return on investment and KPI improvements.</p>
+              <div class="n-viz roi"><svg viewBox="0 0 60 32" fill="none"><path d="M4 26L20 18l12 4L54 6" stroke="#F5C542" stroke-width="2"/><path d="M46 6h8v8" stroke="#F5C542" stroke-width="2"/><text x="4" y="12" fill="#8A91A8" font-size="8" font-family="monospace">ROI</text></svg></div>
+            </div>
+          </div>
+          <div class="node" tabindex="0">
+            <div class="n-name">Learning & Development</div>
+            <div class="n-tag" data-i18n="n9t">Learning experiences by design</div>
+            <div class="n-pop"><p data-i18n="n9p">Instructional methodologies and learning psychology — ADDIE, Octalysis, Sinek's Golden Circle, agile mindset — to integrate learning into experience.</p>
+              <div class="n-viz"><svg viewBox="0 0 60 32" fill="none" stroke="#8A91A8" stroke-width="1.6"><path d="M4 28h12v-8h12v-8h12V4h12" stroke="#F5C542"/><circle cx="52" cy="4" r="3" fill="#F5C542" stroke="none"/></svg></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tier">
+        <div class="tier-label" data-i18n="t4">LVL 4 · Frontier</div>
+        <div class="nodes">
+          <div class="node" tabindex="0">
+            <div class="n-name">AI Workflows</div>
+            <div class="n-tag" data-i18n="n7t">Automation in my process</div>
+            <div class="n-pop"><p data-i18n="n7p">I automate repetitive steps and accelerate exploration with AI tools — research synthesis, iteration, QA. Decisions and craft stay mine.</p>
+              <div class="n-viz"><svg viewBox="0 0 60 32" fill="none" stroke="#8A91A8" stroke-width="1.4"><circle cx="10" cy="16" r="6"/><circle cx="30" cy="16" r="6" stroke="#7C6CF0"/><circle cx="50" cy="16" r="6" stroke="#F5C542"/><path d="M16 16h8M36 16h8" stroke="#F5C542"/></svg></div>
+            </div>
+          </div>
+          <div class="node" tabindex="0">
+            <div class="n-name">HTML / CSS / JS</div>
+            <div class="n-tag" data-i18n="n8t">Design that ships</div>
+            <div class="n-pop"><p data-i18n="n8p">Enough code to build and publish on GitHub Pages — this very site included.</p>
+              <div class="n-viz"><svg viewBox="0 0 60 32" fill="none" stroke="#F5C542" stroke-width="2"><path d="M18 6l-10 10 10 10M42 6l10 10-10 10"/><path d="M32 4l-6 24" stroke="#8A91A8"/></svg></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="tools-h" data-i18n="tools_h">Toolbox</h3>
+    <div class="tb-tabs" role="tablist">
+      <button class="on" data-tb="design" data-i18n="tb1">Design</button>
+      <button data-tb="data" data-i18n="tb2">Data</button>
+      <button data-tb="ld">L&D</button>
+      <button data-tb="platforms" data-i18n="tb3">Platforms</button>
+      <button data-tb="devai">Dev & AI</button>
+    </div>
+    <div class="tb-panel on" data-tbp="design">
+      <span class="tb-chip">Figma</span><span class="tb-chip">Adobe XD</span><span class="tb-chip">Photoshop</span><span class="tb-chip">Illustrator</span><span class="tb-chip">Canva</span>
+    </div>
+    <div class="tb-panel" data-tbp="data">
+      <span class="tb-chip">Google Sheets</span><span class="tb-chip">BigQuery</span>
+    </div>
+    <div class="tb-panel" data-tbp="ld">
+      <span class="tb-chip">ADDIE</span><span class="tb-chip">Octalysis</span><span class="tb-chip">Golden Circle (Sinek)</span><span class="tb-chip">Agile mindset</span><span class="tb-chip">Design Thinking</span>
+    </div>
+    <div class="tb-panel" data-tbp="platforms">
+      <span class="tb-chip">Centrical</span><span class="tb-chip">Notion</span><span class="tb-chip">Google Workspace</span>
+    </div>
+    <div class="tb-panel" data-tbp="devai">
+      <span class="tb-chip">GitHub / GitHub Pages</span><span class="tb-chip">Claude</span><span class="tb-chip">HTML · CSS · JS</span>
+    </div>
+  </div>
+</section>
+
+<section id="cv">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow" data-i18n="cv_eyebrow">Side quest: unlock the CV</p>
+      <h2 data-i18n="cv_h2">Unlock my full CV</h2>
+      <p data-i18n="cv_p">Flip the three cards to learn something about me — unlock all of them and my full CV appears. No shortcuts, player.</p>
+    </div>
+    <div class="cv-progress"><span data-i18n="cv_prog">PROGRESS:</span> <span id="cvCount">0</span>/3 🔒</div>
+    <div class="cv-cards">
+      <button class="flip" aria-expanded="false">
+        <div class="flip-inner">
+          <div class="face face-front"><div class="q">?</div><div class="hint" data-i18n="cv_c1_hint">Card 01 · Experience</div></div>
+          <div class="face face-back"><h4 data-i18n="cv_c1_t">Experience</h4><p data-i18n="cv_c1_p">Gamification Lead implementing Centrical, an enterprise gamified performance & learning platform — missions, levels, rewards and feedback loops for thousands of users.</p></div>
+        </div>
+      </button>
+      <button class="flip" aria-expanded="false">
+        <div class="flip-inner">
+          <div class="face face-front"><div class="q">?</div><div class="hint" data-i18n="cv_c2_hint">Card 02 · Education</div></div>
+          <div class="face face-back"><h4 data-i18n="cv_c2_t">Education</h4><p data-i18n="cv_c2_p">Business degree + Master's in Business Administration. Google UX Design and Google Data Analytics certificates. Design + data + business in one profile.</p></div>
+        </div>
+      </button>
+      <button class="flip" aria-expanded="false">
+        <div class="flip-inner">
+          <div class="face face-front"><div class="q">?</div><div class="hint" data-i18n="cv_c3_hint">Card 03 · Superpower</div></div>
+          <div class="face face-back"><h4 data-i18n="cv_c3_t">Superpower</h4><p data-i18n="cv_c3_p">Turning design into business results: gamified strategies that deliver ROI, savings and KPI improvements — with AI and automation optimizing my process along the way.</p></div>
+        </div>
+      </button>
+    </div>
+    <div class="cv-locked" id="cvLocked" data-i18n="cv_locked">🔒 CV locked — flip all three cards to reveal it</div>
+    <div class="cv-full" id="cvFull">
+      <h3 data-i18n="cv_unlocked">🏆 Achievement unlocked: Full CV</h3>
+      <div class="cv-grid">
+        <div class="cv-block">
+          <h5 data-i18n="cvb1_h">Experience</h5>
+          <ul>
+            <li><b>Gamification Lead</b> — <span data-i18n="cvb1_1">Centrical implementations, enterprise gamified learning & performance</span></li>
+            <li><b>ROI & KPIs</b> — <span data-i18n="cvb1_4">Gamified campaigns delivering savings, ROI and KPI improvements</span></li>
+            <li><b>UX Design</b> — <span data-i18n="cvb1_2">End-to-end case studies: research → prototyping → usability testing → iteration</span></li>
+            <li><b>Remote work</b> — <span data-i18n="cvb1_3">+6 years working remotely across enterprise environments</span></li>
+          </ul>
+        </div>
+        <div class="cv-block">
+          <h5 data-i18n="cvb2_h">Education & Languages</h5>
+          <ul>
+            <li><b data-i18n="cvb2_mba">Master's in Business Administration</b></li>
+            <li><b data-i18n="cvb2_ba">Bachelor's degree in Business</b></li>
+            <li><b>Google UX Design Certificate</b></li>
+            <li><b>Google Data Analytics Certificate</b></li>
+            <li><b data-i18n="cvb2_langs">Languages:</b> <span data-i18n="cvb2_langs_v">Spanish (native) · English (professional) · Portuguese (basic)</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="cta-row" style="margin-top:26px">
+        <a class="btn btn-primary" href="mailto:UriAdalid@gmail.com" data-i18n="cv_btn1">Request full resume (PDF)</a>
+        <a class="btn btn-ghost" href="https://www.linkedin.com/in/urieladalid" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="juego">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow" data-i18n="g_eyebrow">Final boss</p>
+      <h2 data-i18n="g_h2">Hire Uriel before another company does</h2>
+      <p data-i18n="g_p">Collect the portfolio 🎨, the data 📊 and the experience ⭐, then reach the offer 💼 to hire him. But hurry — a rival company 🏢 is closing in on UG. If it reaches him first, he's gone.</p>
+    </div>
+    <div class="game-wrap">
+      <div class="game-hud">
+        <div class="items"><span id="it0">🎨</span><span id="it1">📊</span><span id="it2">⭐</span></div>
+        <div><span data-i18n="g_moves">Moves:</span> <span id="moves">0</span></div>
+        <button class="btn btn-ghost" style="padding:6px 14px;font-size:.75rem" id="resetGame" data-i18n="g_reset">Restart</button>
+      </div>
+      <div class="board-wrap"><div id="board" aria-label="Maze"></div><div class="game-over" id="gameOver"><span id="goMsg"></span></div></div>
+      <div class="pad">
+        <button class="blank"></button><button data-d="up" aria-label="Up">▲</button><button class="blank"></button>
+        <button data-d="left" aria-label="Left">◀</button><button data-d="down" aria-label="Down">▼</button><button data-d="right" aria-label="Right">▶</button>
+      </div>
+      <div class="game-msg" id="gameMsg"></div>
+    </div>
+  </div>
+</section>
+
+<section id="sobre-mi">
+  <div class="wrap about-grid">
+    <div>
+      <div class="sec-head" style="margin-bottom:24px">
+        <p class="eyebrow" data-i18n="about_eyebrow">Character lore</p>
+        <h2 data-i18n="about_h2">About me</h2>
+      </div>
+      <p data-i18n-html="about_p1">I work as a <strong>Gamification Lead</strong> implementing Centrical, an enterprise gamified performance and learning platform. My day-to-day is designing systems that keep thousands of users engaged: missions, levels, rewards and feedback loops.</p>
+      <p data-i18n-html="about_p2">With a <strong>business degree and an MBA</strong>, plus <strong>Google UX Design</strong> and <strong>Google Data Analytics</strong> certificates, I translate design into <strong>business engagement and return on investment</strong>.</p>
+      <p data-i18n-html="about_p3">I use <strong>AI and automation</strong> to streamline my design process — repetitive steps get automated, exploration gets faster — while the research, the decisions and the craft remain mine.</p>
+    </div>
+    <div class="side-note">
+      <h4 data-i18n="qf_h">Quick facts</h4>
+      <ul>
+        <li>📍 <span data-i18n="qf_1">Mexico · +6 years working remotely</span></li>
+        <li>🎓 <span data-i18n="qf_2">MBA + 2× Google Certificates</span></li>
+        <li>🎮 <span data-i18n="qf_3">Specialty: engagement, gamification & ROI</span></li>
+        <li>🎬 <span data-i18n="qf_4">Eager animator — always exploring motion</span></li>
+        <li>💻 <span data-i18n="qf_5">Growing coder — curious by default</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contacto">
+  <div class="wrap">
+    <p class="eyebrow" data-i18n="ct_eyebrow">New quest?</p>
+    <h2 data-i18n="ct_h2">Let's work together</h2>
+    <p data-i18n="ct_p">Open to remote opportunities in UX/UI, Gamification and Learning & Development.</p>
+    <div class="cta-row" style="justify-content:center">
+      <a class="btn btn-primary" href="mailto:UriAdalid@gmail.com">UriAdalid@gmail.com</a>
+      <a class="btn btn-ghost" href="https://www.linkedin.com/in/urieladalid" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">© 2026 Uriel García Adalid · uriel.ux</div></footer>
+
+<script>
+const T={
+en:{nav_projects:"Projects",nav_skills:"Skills",nav_game:"Play",nav_about:"About",nav_contact:"Contact",
+hero_h1:"I design experiences people <em>want</em> to come back to.",
+hero_p:"Why do some products feel impossible to put down? Answering that question became my career. I engineer engagement — loops, rewards, motivation — and turn it into experiences people love and ROI you can measure.",
+hero_cta1:"View projects",hero_cta2:"Get in touch",
+pc_now:"CURRENT: GAMIFICATION LEAD · CENTRICAL",
+pc_xp:"XP — Skill mastery",pc_s1:"Yrs UX certified",pc_s2:"Google certs",pc_s3:"Yrs remote work",
+lg_m:"Mastered",lg_p:"Enhancing",lg_x:"In progress",
+proj_eyebrow:"Completed quests",proj_h2:"Projects",proj_p:"End-to-end case studies: research, wireframes, prototypes, usability studies and iteration. Click any card to open the full case study.",proj_cta:"Open case study (PDF) →",
+proj1_p:"A mobile app to get arcade memberships, tickets and prizes with zero lines and zero bureaucracy. Two rounds of usability testing.",
+proj2_p:"A responsive cinema site to book seats and food online with an immersive experience, from desktop to mobile.",
+proj3_p:"A safety alert app that notifies your trusted circle in seconds — gestures, live streaming and offline functions.",
+skills_eyebrow:"Skill tree",skills_p:"From foundations to frontier.",skills_hint:"hover / tap each node for details",
+t1:"LVL 1 · Foundations",t2:"LVL 2 · Build",t3:"LVL 3 · Amplify",t4:"LVL 4 · Frontier",
+n1t:"Understanding users before designing",n1p:"Interviews, moderated & unmoderated usability studies, and synthesis into actionable insights.",
+n2t:"Structuring ideas at low cost",n2p:"Paper → digital schematics to explore layouts and flows fast, before investing in visuals.",
+n3:"Prototyping",n3t:"Making ideas testable",n3p:"Lo-Fi to Hi-Fi in Adobe XD & Figma — interactive flows ready for usability testing.",
+n4:"Accessibility",n4t:"Design that works for everyone",n4p:"WCAG guidelines, contrast ratios and screen-reader friendly navigation flows.",
+n5:"Data Analysis",n5t:"Decisions backed by evidence",n5p:"Dashboards, KPIs and analysis methodologies — Pareto, trends, cohorts — to measure what actually matters.",
+n6:"Gamification & ROI",n6t:"Engagement that pays off",n6p:"Missions, rewards and progression — I have run gamified campaigns delivering savings, return on investment and KPI improvements.",
+n9t:"Learning experiences by design",n9p:"Instructional methodologies and learning psychology — ADDIE, Octalysis, Sinek's Golden Circle, agile mindset — to integrate learning into experience.",
+n7t:"Automation in my process",n7p:"I automate repetitive steps and accelerate exploration with AI tools — research synthesis, iteration, QA. Decisions and craft stay mine.",
+n8t:"Design that ships",n8p:"Enough code to build and publish on GitHub Pages — this very site included.",
+tools_h:"Toolbox",tb1:"Design",tb2:"Data",tb3:"Platforms",
+cv_eyebrow:"Side quest: unlock the CV",cv_h2:"Unlock my full CV",cv_p:"Flip the three cards to learn something about me — unlock all of them and my full CV appears. No shortcuts, player.",cv_prog:"PROGRESS:",
+cv_c1_hint:"Card 01 · Experience",cv_c1_t:"Experience",cv_c1_p:"Gamification Lead implementing Centrical, an enterprise gamified performance & learning platform — missions, levels, rewards and feedback loops for thousands of users.",
+cv_c2_hint:"Card 02 · Education",cv_c2_t:"Education",cv_c2_p:"Business degree + Master's in Business Administration. Google UX Design and Google Data Analytics certificates. Design + data + business in one profile.",
+cv_c3_hint:"Card 03 · Superpower",cv_c3_t:"Superpower",cv_c3_p:"Turning design into business results: gamified strategies that deliver ROI, savings and KPI improvements — with AI and automation optimizing my process along the way.",
+cv_locked:"🔒 CV locked — flip all three cards to reveal it",cv_unlocked:"🏆 Achievement unlocked: Full CV",
+cvb1_h:"Experience",cvb1_1:"Centrical implementations, enterprise gamified learning & performance",cvb1_4:"Gamified campaigns delivering savings, ROI and KPI improvements",cvb1_2:"End-to-end case studies: research → prototyping → usability testing → iteration",cvb1_3:"+6 years working remotely across enterprise environments",
+cvb2_h:"Education & Languages",cvb2_mba:"Master's in Business Administration",cvb2_ba:"Bachelor's degree in Business",cvb2_langs:"Languages:",cvb2_langs_v:"Spanish (native) · English (professional) · Portuguese (basic)",cv_btn1:"Request full resume (PDF)",
+g_eyebrow:"Final boss",g_h2:"Hire Uriel before another company does",
+g_p:"Collect the portfolio 🎨, the data 📊 and the experience ⭐, then reach the offer 💼 to hire him. But hurry — a rival company 🏢 is closing in on UG. If it reaches him first, he's gone.",
+g_moves:"Moves:",g_reset:"Restart",g_need:"You need all 3 before making the offer!",
+g_win:"🎉 HIRED! You got Uriel before the competition — smart move.",
+g_lose:"😱 Too late — the rival company hired Uriel. Restart and do not let him get away!",
+about_eyebrow:"Character lore",about_h2:"About me",
+about_p1:"I work as a <strong>Gamification Lead</strong> implementing Centrical, an enterprise gamified performance and learning platform. My day-to-day is designing systems that keep thousands of users engaged: missions, levels, rewards and feedback loops.",
+about_p2:"With a <strong>business degree and an MBA</strong>, plus <strong>Google UX Design</strong> and <strong>Google Data Analytics</strong> certificates, I translate design into <strong>business engagement and return on investment</strong>.",
+about_p3:"I use <strong>AI and automation</strong> to streamline my design process — repetitive steps get automated, exploration gets faster — while the research, the decisions and the craft remain mine.",
+qf_h:"Quick facts",qf_1:"Mexico · +6 years working remotely",qf_2:"MBA + 2× Google Certificates",qf_3:"Specialty: engagement, gamification & ROI",qf_4:"Eager animator — always exploring motion",qf_5:"Growing coder — curious by default",
+ct_eyebrow:"New quest?",ct_h2:"Let's work together",ct_p:"Open to remote opportunities in UX/UI, Gamification and Learning & Development.",
+foot:"designed and built by Uriel, with AI in the toolbox"},
+es:{nav_projects:"Proyectos",nav_skills:"Skills",nav_game:"Jugar",nav_about:"Sobre mí",nav_contact:"Contacto",
+hero_h1:"Diseño experiencias que la gente <em>quiere</em> volver a usar.",
+hero_p:"¿Por qué hay productos que no puedes soltar? Responder esa pregunta se volvió mi carrera. Diseño engagement — loops, recompensas, motivación — y lo convierto en experiencias que la gente ama y ROI que se puede medir.",
+hero_cta1:"Ver proyectos",hero_cta2:"Contactar",
+pc_now:"ACTUAL: GAMIFICATION LEAD · CENTRICAL",
+pc_xp:"XP — Dominio de skills",pc_s1:"Años UX certificado",pc_s2:"Certs. de Google",pc_s3:"Años de remoto",
+lg_m:"Dominado",lg_p:"Perfeccionando",lg_x:"En progreso",
+proj_eyebrow:"Misiones completadas",proj_h2:"Proyectos",proj_p:"Casos de estudio end-to-end: research, wireframes, prototipos, estudios de usabilidad e iteración. Da clic en cualquier tarjeta para abrir el caso completo.",proj_cta:"Abrir caso de estudio (PDF) →",
+proj1_p:"App móvil para adquirir membresías, tickets y premios de un arcade sin filas ni burocracia. Dos rondas de estudios de usabilidad.",
+proj2_p:"Sitio responsivo de cine para reservar asientos y alimentos en línea con una experiencia inmersiva, de desktop a móvil.",
+proj3_p:"App de alertas de seguridad que avisa a tu red de confianza en segundos — gestos, streaming en vivo y funciones offline.",
+skills_eyebrow:"Árbol de habilidades",skills_p:"De los fundamentos al frontier.",skills_hint:"pasa el cursor o toca cada nodo para más detalle",
+t1:"LVL 1 · Fundamentos",t2:"LVL 2 · Construcción",t3:"LVL 3 · Amplificación",t4:"LVL 4 · Frontier",
+n1t:"Entender al usuario antes de diseñar",n1p:"Entrevistas, estudios de usabilidad moderados y no moderados, y síntesis en insights accionables.",
+n2t:"Estructurar ideas a bajo costo",n2p:"De papel a esquemas digitales para explorar layouts y flujos rápido, antes de invertir en visuales.",
+n3:"Prototipado",n3t:"Hacer las ideas testeables",n3p:"De Lo-Fi a Hi-Fi en Adobe XD y Figma — flujos interactivos listos para testing de usabilidad.",
+n4:"Accesibilidad",n4t:"Diseño que funciona para todos",n4p:"Lineamientos WCAG, proporciones de contraste y flujos compatibles con lectores de pantalla.",
+n5:"Análisis de datos",n5t:"Decisiones respaldadas con evidencia",n5p:"Dashboards, KPIs y metodologías de análisis — Pareto, tendencias, cohortes — para medir lo que realmente importa.",
+n6:"Gamification & ROI",n6t:"Engagement que da resultados",n6p:"Misiones, recompensas y progresión — he trabajado campañas gamificadas logrando ahorros, retorno de inversión y mejora de KPIs.",
+n9t:"Experiencias de aprendizaje por diseño",n9p:"Metodologías instruccionales y psicología del aprendizaje — ADDIE, Octalysis, Golden Circle de Sinek, mentalidad agile — para integrar el aprendizaje a la experiencia.",
+n7t:"Automatización en mi proceso",n7p:"Automatizo pasos repetitivos y acelero la exploración con herramientas de AI — síntesis de research, iteración, QA. Las decisiones y el criterio son míos.",
+n8t:"Diseño que se publica",n8p:"Suficiente código para construir y publicar en GitHub Pages — incluyendo este sitio.",
+tools_h:"Herramientas",tb1:"Diseño",tb2:"Datos",tb3:"Plataformas",
+cv_eyebrow:"Misión secundaria: desbloquea el CV",cv_h2:"Desbloquea mi CV completo",cv_p:"Voltea las tres cartas para conocer algo de mí — desbloquéalas todas y aparecerá mi CV completo. Sin atajos, player.",cv_prog:"PROGRESO:",
+cv_c1_hint:"Carta 01 · Experiencia",cv_c1_t:"Experiencia",cv_c1_p:"Gamification Lead implementando Centrical, plataforma enterprise de performance y aprendizaje gamificado — misiones, niveles, recompensas y feedback loops para miles de usuarios.",
+cv_c2_hint:"Carta 02 · Educación",cv_c2_t:"Educación",cv_c2_p:"Licenciatura en negocios + Maestría en Dirección de Negocios. Certificados Google UX Design y Google Data Analytics. Diseño + datos + negocio en un solo perfil.",
+cv_c3_hint:"Carta 03 · Superpoder",cv_c3_t:"Superpoder",cv_c3_p:"Convertir diseño en resultados de negocio: estrategias gamificadas que logran ROI, ahorros y mejora de KPIs — con AI y automatización optimizando mi proceso en el camino.",
+cv_locked:"🔒 CV bloqueado — voltea las tres cartas para revelarlo",cv_unlocked:"🏆 Logro desbloqueado: CV completo",
+cvb1_h:"Experiencia",cvb1_1:"Implementaciones de Centrical, aprendizaje y performance gamificado enterprise",cvb1_4:"Campañas gamificadas logrando ahorros, ROI y mejora de KPIs",cvb1_2:"Casos de estudio end-to-end: research → prototipado → testing de usabilidad → iteración",cvb1_3:"+6 años trabajando remoto en entornos enterprise",
+cvb2_h:"Educación e idiomas",cvb2_mba:"Maestría en Dirección de Negocios",cvb2_ba:"Licenciatura en Negocios",cvb2_langs:"Idiomas:",cvb2_langs_v:"Español (nativo) · Inglés (profesional) · Portugués (básico)",cv_btn1:"Solicitar CV completo (PDF)",
+g_eyebrow:"Jefe final",g_h2:"Contrata a Uriel antes de que otra empresa lo encuentre",
+g_p:"Recolecta el portafolio 🎨, los datos 📊 y la experiencia ⭐, y llega a la oferta 💼 para contratarlo. Pero apúrate — una empresa rival 🏢 se acerca a UG. Si lo alcanza primero, lo pierdes.",
+g_moves:"Movimientos:",g_reset:"Reiniciar",g_need:"¡Necesitas los 3 antes de hacer la oferta!",
+g_win:"🎉 ¡CONTRATADO! Conseguiste a Uriel antes que la competencia — buena jugada.",
+g_lose:"😱 Demasiado tarde — la empresa rival contrató a Uriel. Reinicia y no lo dejes ir.",
+about_eyebrow:"Lore del personaje",about_h2:"Sobre mí",
+about_p1:"Trabajo como <strong>Gamification Lead</strong> implementando Centrical, una plataforma enterprise de performance y aprendizaje gamificado. Mi día a día es diseñar sistemas que mantienen a miles de usuarios comprometidos: misiones, niveles, recompensas y feedback loops.",
+about_p2:"Con <strong>licenciatura en negocios y maestría en dirección de negocios</strong>, más certificados de <strong>Google UX Design</strong> y <strong>Google Data Analytics</strong>, traduzco el diseño en <strong>engagement de negocio y retorno de inversión</strong>.",
+about_p3:"Uso <strong>AI y automatización</strong> para agilizar mi proceso de diseño — los pasos repetitivos se automatizan, la exploración se acelera — mientras el research, las decisiones y el oficio siguen siendo míos.",
+qf_h:"Quick facts",qf_1:"México · +6 años trabajando remoto",qf_2:"MBA + 2× Certificados Google",qf_3:"Especialidad: engagement, gamification y ROI",qf_4:"Entusiasta de la animación — siempre explorando el motion",qf_5:"Aprendiz de código — curioso por default",
+ct_eyebrow:"¿Nueva misión?",ct_h2:"Trabajemos juntos",ct_p:"Abierto a oportunidades remotas en UX/UI, Gamification y Learning & Development.",
+foot:"diseñado y construido por Uriel, con AI en la caja de herramientas"},
+pt:{nav_projects:"Projetos",nav_skills:"Skills",nav_game:"Jogar",nav_about:"Sobre mim",nav_contact:"Contato",
+hero_h1:"Eu desenho experiências que as pessoas <em>querem</em> usar de novo.",
+hero_p:"Por que alguns produtos são impossíveis de largar? Responder essa pergunta virou minha carreira. Eu projeto engagement — loops, recompensas, motivação — e transformo isso em experiências que as pessoas amam e ROI mensurável.",
+hero_cta1:"Ver projetos",hero_cta2:"Entrar em contato",
+pc_now:"ATUAL: GAMIFICATION LEAD · CENTRICAL",
+pc_xp:"XP — Domínio de skills",pc_s1:"Anos UX certificado",pc_s2:"Certs. do Google",pc_s3:"Anos de remoto",
+lg_m:"Dominado",lg_p:"Aperfeiçoando",lg_x:"Em progresso",
+proj_eyebrow:"Missões completadas",proj_h2:"Projetos",proj_p:"Estudos de caso end-to-end: research, wireframes, protótipos, testes de usabilidade e iteração. Clique em qualquer cartão para abrir o caso completo.",proj_cta:"Abrir estudo de caso (PDF) →",
+proj1_p:"App mobile para obter assinaturas, tickets e prêmios de um arcade sem filas nem burocracia. Duas rodadas de testes de usabilidade.",
+proj2_p:"Site responsivo de cinema para reservar assentos e comida online com uma experiência imersiva, do desktop ao mobile.",
+proj3_p:"App de alertas de segurança que avisa sua rede de confiança em segundos — gestos, streaming ao vivo e funções offline.",
+skills_eyebrow:"Árvore de habilidades",skills_p:"Dos fundamentos ao frontier.",skills_hint:"passe o cursor ou toque em cada nó para mais detalhes",
+t1:"LVL 1 · Fundamentos",t2:"LVL 2 · Construção",t3:"LVL 3 · Amplificação",t4:"LVL 4 · Frontier",
+n1t:"Entender o usuário antes de desenhar",n1p:"Entrevistas, testes de usabilidade moderados e não moderados, e síntese em insights acionáveis.",
+n2t:"Estruturar ideias a baixo custo",n2p:"Do papel a esquemas digitais para explorar layouts e fluxos rápido, antes de investir em visuais.",
+n3:"Prototipagem",n3t:"Tornar as ideias testáveis",n3p:"De Lo-Fi a Hi-Fi no Adobe XD e Figma — fluxos interativos prontos para testes de usabilidade.",
+n4:"Acessibilidade",n4t:"Design que funciona para todos",n4p:"Diretrizes WCAG, contraste e fluxos compatíveis com leitores de tela.",
+n5:"Análise de dados",n5t:"Decisões apoiadas em evidências",n5p:"Dashboards, KPIs e metodologias de análise — Pareto, tendências, coortes — para medir o que realmente importa.",
+n6:"Gamificação & ROI",n6t:"Engagement que dá resultado",n6p:"Missões, recompensas e progressão — trabalhei campanhas gamificadas gerando economia, retorno sobre investimento e melhoria de KPIs.",
+n9t:"Experiências de aprendizado por design",n9p:"Metodologias instrucionais e psicologia do aprendizado — ADDIE, Octalysis, Golden Circle de Sinek, mentalidade agile — para integrar o aprendizado à experiência.",
+n7t:"Automação no meu processo",n7p:"Automatizo passos repetitivos e acelero a exploração com ferramentas de AI — síntese de research, iteração, QA. As decisões e o ofício são meus.",
+n8t:"Design que é publicado",n8p:"Código suficiente para construir e publicar no GitHub Pages — incluindo este site.",
+tools_h:"Ferramentas",tb1:"Design",tb2:"Dados",tb3:"Plataformas",
+cv_eyebrow:"Missão secundária: desbloqueie o CV",cv_h2:"Desbloqueie meu CV completo",cv_p:"Vire as três cartas para saber algo sobre mim — desbloqueie todas e meu CV completo aparece. Sem atalhos, player.",cv_prog:"PROGRESSO:",
+cv_c1_hint:"Carta 01 · Experiência",cv_c1_t:"Experiência",cv_c1_p:"Gamification Lead implementando Centrical, plataforma enterprise de performance e aprendizado gamificado — missões, níveis, recompensas e feedback loops para milhares de usuários.",
+cv_c2_hint:"Carta 02 · Educação",cv_c2_t:"Educação",cv_c2_p:"Graduação em negócios + Mestrado em Administração de Empresas. Certificados Google UX Design e Google Data Analytics. Design + dados + negócios em um só perfil.",
+cv_c3_hint:"Carta 03 · Superpoder",cv_c3_t:"Superpoder",cv_c3_p:"Transformar design em resultados de negócio: estratégias gamificadas que geram ROI, economia e melhoria de KPIs — com AI e automação otimizando meu processo pelo caminho.",
+cv_locked:"🔒 CV bloqueado — vire as três cartas para revelá-lo",cv_unlocked:"🏆 Conquista desbloqueada: CV completo",
+cvb1_h:"Experiência",cvb1_1:"Implementações de Centrical, aprendizado e performance gamificado enterprise",cvb1_4:"Campanhas gamificadas gerando economia, ROI e melhoria de KPIs",cvb1_2:"Estudos de caso end-to-end: research → prototipagem → testes de usabilidade → iteração",cvb1_3:"+6 anos trabalhando remoto em ambientes enterprise",
+cvb2_h:"Educação e idiomas",cvb2_mba:"Mestrado em Administração de Empresas",cvb2_ba:"Graduação em Negócios",cvb2_langs:"Idiomas:",cvb2_langs_v:"Espanhol (nativo) · Inglês (profissional) · Português (básico)",cv_btn1:"Solicitar currículo completo (PDF)",
+g_eyebrow:"Chefe final",g_h2:"Contrate Uriel antes que outra empresa o encontre",
+g_p:"Colete o portfólio 🎨, os dados 📊 e a experiência ⭐, e chegue à oferta 💼 para contratá-lo. Mas rápido — uma empresa rival 🏢 está se aproximando de UG. Se ela chegar primeiro, você o perde.",
+g_moves:"Movimentos:",g_reset:"Reiniciar",g_need:"Você precisa dos 3 antes de fazer a oferta!",
+g_win:"🎉 CONTRATADO! Você conseguiu Uriel antes da concorrência — boa jogada.",
+g_lose:"😱 Tarde demais — a empresa rival contratou Uriel. Reinicie e não o deixe escapar.",
+about_eyebrow:"Lore do personagem",about_h2:"Sobre mim",
+about_p1:"Trabalho como <strong>Gamification Lead</strong> implementando Centrical, uma plataforma enterprise de performance e aprendizado gamificado. Meu dia a dia é desenhar sistemas que mantêm milhares de usuários engajados: missões, níveis, recompensas e feedback loops.",
+about_p2:"Com <strong>graduação em negócios e MBA</strong>, mais certificados <strong>Google UX Design</strong> e <strong>Google Data Analytics</strong>, traduzo o design em <strong>engagement de negócio e retorno sobre investimento</strong>.",
+about_p3:"Uso <strong>AI e automação</strong> para agilizar meu processo de design — passos repetitivos são automatizados, a exploração acelera — enquanto o research, as decisões e o ofício continuam sendo meus.",
+qf_h:"Quick facts",qf_1:"México · +6 anos trabalhando remoto",qf_2:"MBA + 2× Certificados Google",qf_3:"Especialidade: engagement, gamificação e ROI",qf_4:"Entusiasta de animação — sempre explorando o motion",qf_5:"Aprendiz de código — curioso por padrão",
+ct_eyebrow:"Nova missão?",ct_h2:"Vamos trabalhar juntos",ct_p:"Aberto a oportunidades remotas em UX/UI, Gamificação e Learning & Development.",
+foot:"desenhado e construído por Uriel, com AI na caixa de ferramentas"}
+};
+let LANG='en';
+function setLang(l){
+  LANG=l;document.documentElement.lang=l;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(T[l][k])el.textContent=T[l][k]});
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{const k=el.dataset.i18nHtml;if(T[l][k])el.innerHTML=T[l][k]});
+  document.querySelectorAll('.lang button').forEach(b=>b.classList.toggle('on',b.dataset.lang===l));
+  try{localStorage.setItem('uxlang',l)}catch(e){}
+}
+document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));
+try{const saved=localStorage.getItem('uxlang');if(saved&&T[saved])setLang(saved)}catch(e){}
+
+const allBadges=[...document.querySelectorAll('#badges .badge')];
+const lgBtns=document.querySelectorAll('.legend button');
+function calcXP(){
+  const lit=allBadges.filter(b=>b.classList.contains('lit'));
+  const pct=lit.length?Math.round(lit.reduce((a,b)=>a+parseFloat(b.dataset.pct),0)/lit.length):0;
+  document.getElementById('xpPct').textContent=pct+'%';
+  document.getElementById('xpFill').style.width=pct+'%';
+}
+function syncLegend(){
+  lgBtns.forEach(b=>{
+    const g=allBadges.filter(x=>x.dataset.s===b.dataset.f);
+    b.classList.toggle('on',g.every(x=>x.classList.contains('lit')));
+  });
+}
+function setBadge(b,on){b.classList.toggle('lit',on);b.classList.toggle('dim',!on);}
+allBadges.forEach(b=>b.addEventListener('click',()=>{
+  setBadge(b,!b.classList.contains('lit'));syncLegend();calcXP();
+}));
+lgBtns.forEach(btn=>btn.addEventListener('click',()=>{
+  const g=allBadges.filter(x=>x.dataset.s===btn.dataset.f);
+  const allOn=g.every(x=>x.classList.contains('lit'));
+  g.forEach(x=>setBadge(x,!allOn));syncLegend();calcXP();
+}));
+syncLegend();requestAnimationFrame(calcXP);
+
+document.querySelectorAll('.node').forEach(n=>{
+  n.addEventListener('click',e=>{e.stopPropagation();n.classList.toggle('open')});
+});
+document.querySelectorAll('.tier-label').forEach(t=>{
+  t.addEventListener('click',()=>t.parentElement.classList.toggle('open'));
+});
+
+document.querySelectorAll('.tb-tabs button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.tb-tabs button').forEach(x=>x.classList.toggle('on',x===b));
+    document.querySelectorAll('.tb-panel').forEach(p=>p.classList.toggle('on',p.dataset.tbp===b.dataset.tb));
+  });
+});
+
+const flips=document.querySelectorAll('.flip');
+const count=document.getElementById('cvCount');
+const locked=document.getElementById('cvLocked');
+const full=document.getElementById('cvFull');
+function updCV(){
+  const n=[...flips].filter(f=>f.classList.contains('flipped')).length;
+  count.textContent=n;
+  if(n===3){locked.style.display='none';full.classList.add('open')}
+  else{locked.style.display='block';full.classList.remove('open')}
+}
+flips.forEach(f=>f.addEventListener('click',()=>{
+  f.classList.toggle('flipped');
+  f.setAttribute('aria-expanded',f.classList.contains('flipped'));
+  updCV();
+}));
+
+/* minigame with rival chase */
+(function(){
+  const COLS=9,ROWS=5;
+  const walls=new Set(['1,1','1,2','3,0','3,1','3,3','5,1','5,3','5,4','7,0','7,2','7,3']);
+  const itemsBase=[{x:2,y:4,e:'🎨'},{x:4,y:0,e:'📊'},{x:6,y:2,e:'⭐'}];
+  const goal={x:8,y:4};
+  let player,rival,items,got,moves,over;
+  const board=document.getElementById('board');
+  const msg=document.getElementById('gameMsg');
+  const movesEl=document.getElementById('moves');
+  function reset(){
+    player={x:0,y:0};rival={x:8,y:0};
+    items=itemsBase.map(i=>({x:i.x,y:i.y,e:i.e,taken:false}));got=0;moves=0;over=false;
+    msg.textContent='';msg.classList.remove('win','lose');
+    const go=document.getElementById('gameOver');go.classList.remove('show','win','lose');
+    [0,1,2].forEach(i=>document.getElementById('it'+i).classList.remove('got'));
+    movesEl.textContent='0';render();
+  }
+  function render(){
+    board.innerHTML='';
+    for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){
+      const c=document.createElement('div');c.className='cell';
+      if(walls.has(x+','+y))c.classList.add('wall');
+      if(x===goal.x&&y===goal.y){c.classList.add('goal');c.textContent='💼'}
+      const it=items.find(i=>i.x===x&&i.y===y&&!i.taken);
+      if(it)c.textContent=it.e;
+      if(rival.x===x&&rival.y===y){c.classList.add('rival');c.textContent='🏢'}
+      if(player.x===x&&player.y===y){c.classList.add('player');c.textContent='UG'}
+      board.appendChild(c);
+    }
+  }
+  function rivalStep(){
+    const dx=player.x-rival.x,dy=player.y-rival.y;
+    const sx=dx===0?0:(dx>0?1:-1),sy=dy===0?0:(dy>0?1:-1);
+    const tries=Math.abs(dx)>=Math.abs(dy)?[[sx,0],[0,sy]]:[[0,sy],[sx,0]];
+    for(let i=0;i<tries.length;i++){
+      const tx=tries[i][0],ty=tries[i][1];
+      if(tx===0&&ty===0)continue;
+      const nx=rival.x+tx,ny=rival.y+ty;
+      if(nx>=0&&ny>=0&&nx<COLS&&ny<ROWS&&!walls.has(nx+','+ny)&&!(nx===goal.x&&ny===goal.y)){
+        rival={x:nx,y:ny};break;
+      }
+    }
+  }
+  function move(dx,dy){
+    if(over)return;
+    const nx=player.x+dx,ny=player.y+dy;
+    if(nx<0||ny<0||nx>=COLS||ny>=ROWS||walls.has(nx+','+ny))return;
+    player={x:nx,y:ny};moves++;movesEl.textContent=moves;
+    const it=items.find(i=>i.x===nx&&i.y===ny&&!i.taken);
+    if(it){it.taken=true;got++;
+      const idx=itemsBase.findIndex(b=>b.e===it.e);
+      document.getElementById('it'+idx).classList.add('got');
+    }
+    if(nx===goal.x&&ny===goal.y&&got===3){
+      over=true;render();
+      const go=document.getElementById('gameOver');
+      document.getElementById('goMsg').textContent=T[LANG].g_win;
+      go.classList.add('show','win');return;
+    }
+    if(nx===goal.x&&ny===goal.y){msg.textContent=T[LANG].g_need}
+    else{msg.textContent=''}
+    if(moves%2===0){rivalStep();}
+    if(rival.x===player.x&&rival.y===player.y){
+      over=true;render();
+      const go=document.getElementById('gameOver');
+      document.getElementById('goMsg').textContent=T[LANG].g_lose;
+      go.classList.add('show','lose');return;
+    }
+    render();
+  }
+  const D={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]};
+  document.querySelectorAll('.pad button[data-d]').forEach(b=>b.addEventListener('click',()=>move(D[b.dataset.d][0],D[b.dataset.d][1])));
+  document.addEventListener('keydown',e=>{
+    const k={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',s:'down',a:'left',d:'right'}[e.key];
+    if(k){const g=document.getElementById('juego').getBoundingClientRect();
+      if(g.top<window.innerHeight&&g.bottom>0){e.preventDefault();move(D[k][0],D[k][1])}}
+  });
+  document.getElementById('resetGame').addEventListener('click',reset);
+  reset();
+})();
+
+const secs=document.querySelectorAll('section, header.hero');
+const links=document.querySelectorAll('.nav-links a');
+const io=new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id))}});
+},{rootMargin:'-40% 0px -55% 0px'});
+secs.forEach(s=>{if(s.id)io.observe(s)});
+</script>
+</body>
+</html>
